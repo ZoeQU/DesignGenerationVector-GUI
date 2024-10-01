@@ -1,0 +1,20 @@
+# gitignore template for InforCRM (formerly SalesLogix)
+# website: https://www.infor.com/product-summary/cx/infor-crm/
+#
+# Recommended: VisualStudio.gitignore
+
+# Ignore files
+dalle2.py
+g_img.jpg
+
+# Ignore folders
+laionDALLE2-PyTorch/
+weights/
+
+# Force include portal SupportFiles
+/doc/*
+!visulization.py
+!doc/input-de-vectors/
+!doc/inputVector_v1/
+!doc/pantone/
+!doc/ref/

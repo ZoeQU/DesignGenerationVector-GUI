@@ -9,10 +9,9 @@ import cv2  #3.4.2
 import os
 import re
 import heapq
-from PIL import Image
+from PIL import ImageDraw, Image, ImageFont
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-
 
 def im_show(im):
     plt.imshow(im)
@@ -21,8 +20,23 @@ def im_show(im):
     plt.cla()
 
 
-def cal_distance(p1, p2):
+def cal_distance_Euclidean(p1, p2):
     return math.sqrt(math.pow((p2[0] - p1[0]), 2) + math.pow((p2[1] - p1[1]), 2) + math.pow((p2[2] - p1[2]), 2))
+
+
+def cal_distance_Cosine(p1, p2):
+    a = p1[0] * p2[0] + p1[1] * p2[1] + p1[2] * p2[2]
+    b = math.sqrt(math.pow(p1[0], 2) + math.pow(p1[1], 2) + math.pow(p1[2], 2)) \
+        * math.sqrt(math.pow(p2[0], 2) + math.pow(p2[1], 2) + math.pow(p2[2], 2))
+    return round(a/b, 4)
+
+
+def cal_distance(p1, p2, w):
+    if w == 1:
+        dis = cal_distance_Euclidean(p1, p2)
+    else:
+        dis = cal_distance_Cosine(p1, p2)
+    return dis
 
 
 def find_pantone(p2):
@@ -41,22 +55,21 @@ def find_pantone(p2):
 
     color_dis = []
     for i in pantone_rgb:
-        dis = cal_distance(i, p2)
+        dis = cal_distance(i, p2, 1)
         color_dis.append(dis)
 
     # # 返回一个值
-    ind = np.argmin(np.array(color_dis))
-    code = pantone_code[int(ind)]
-    name = pantone_name[int(ind)]
+    # ind = np.argmin(np.array(color_dis))
+    # code = pantone_code[int(ind)]
+    # name = pantone_name[int(ind)]
+
     # # 返回3个值
-    # a = np.array(color_dis)
-    # inds = heapq.nlargest(3, range(len(a)), a.take)
-    # codes = []
-    # names = []
-    # for ind in inds:
-    #     codes.append(pantone_code[ind])
-    #     names.append(pantone_name[ind])
-    return code, name
+    a = np.array(color_dis)
+    inds = heapq.nlargest(3, range(len(a)), a.take)
+    pantone = []
+    for ind in inds:
+        pantone.append([pantone_rgb[ind], pantone_code[ind], pantone_name[ind]])
+    return pantone
 
 
 def color_his(img, t):
@@ -76,8 +89,8 @@ def color_his(img, t):
     # values = [v for v in counts.values()]
     fig, ax = plt.subplots(figsize=(10, 7))
     p = ax.hist(img, bins=20, rwidth=0.85, weights=[1./len(img)]*len(img))
+    plt.axhline(t, linewidth=2, linestyle="--", color='red')  # horizontal line
     # plt.axvline(int(thre), linewidth=2, linestyle="--", color='red') # vertical line
-    plt.axhline(t, linewidth=2, linestyle="--", color='red') # horizontal line
     # plt.text(int(thre), 0, int(thre), fontsize=18) # add text
     # ax.set_title("Simple Histogram") # add title
     # plt.savefig(setting.SavePath + files[:-4] + '_' + "gray_color_dis_hist.png")
@@ -90,29 +103,69 @@ def color_his(img, t):
     return len(thre)
 
 
+def parse_pantone(pantone):
+    code = pantone[1].split(' ')
+    name = pantone[2].split(' ')
+    if len(name) == 1:
+        tt = str(code[0] + '\n' + name[0])
+    elif len(name) == 2:
+        tt = str(code[0] + '\n' + name[0] + '\n' + name[1])
+    else:
+        tt = str(code[0] + '\n' + name[0] + '\n' + name[1] + '\n' + name[2])
+    return tt
+
+
 def color_blocks(color_info, savename):
     cluster_rgb = [i[2] for i in color_info]
-    """show color blocks, max 10 colors"""
-    fig, axs = plt.subplots(len(cluster_rgb), 1, figsize=(15, 15))
+    imgs = []
+    # get a font
+    font = ImageFont.truetype("Pillow/Tests/fonts/DejaVuSans.ttf", 15)
+    
+    # get a text color
+    fillcolor = (255, 0, 0)
+    for i in range(len(cluster_rgb)):
+        color = cluster_rgb[i]
+        img = Image.new('RGB', (100, 100), tuple(color))
+        imgs.append(img)
+        pantone = find_pantone(color)
+        img1 = Image.new('RGB', (100, 100), tuple(pantone[0][0]))
+        draw = ImageDraw.Draw(img1)
+        tt0 = parse_pantone(pantone[0])
+        draw.text((5, 20), tt0, font=font, fill=fillcolor)
 
-    """add Pantone color number"""
-    cluster_pantone = []
-    for j in cluster_rgb:
-        pantone_code, pantone_name = find_pantone(j)
-        cluster_pantone.append([pantone_code, pantone_name])
+        imgs.append(img1)
+        img2 = Image.new('RGB', (100, 100), tuple(pantone[1][0]))
+        draw = ImageDraw.Draw(img2)
+        tt1 = parse_pantone(pantone[1])
+        draw.text((5, 20), tt1, font=font, fill=fillcolor)
+
+        imgs.append(img2)
+        img3 = Image.new('RGB', (100, 100), tuple(pantone[2][0]))
+        imgs.append(img3)
+        draw = ImageDraw.Draw(img3)
+        tt2 = parse_pantone(pantone[2])
+        draw.text((5, 20), tt2, font=font, fill=fillcolor)
+
+    plt.figure(figsize=(50, 40))
+    for j in range(1, 4*len(cluster_rgb)+1):
+        plt.subplot(len(cluster_rgb), 4, j)
+        plt.imshow(imgs[j-1])
+        plt.axis('off')
+    plt.savefig(savename[:-4] + '_compare.png')
+    # plt.show()
+    plt.close()
+
+    """show color blocks, colors"""
+    fig, axs = plt.subplots(len(cluster_rgb), 1, figsize=(15, 15))
 
     for i, color in enumerate(cluster_rgb):
         img = Image.new('RGB', (10, 10), tuple(color))
         ax = axs[i]
-        l = str(cluster_pantone[i][0] + '\n' + cluster_pantone[i][1])
-        ax.set_title(l, fontsize=12)
-        # ax.set_xticks([])
-        # ax.set_yticks([]) # 去掉坐标轴　　
         ax.axis('off')
         ax.imshow(img)
     plt.savefig(savename, dpi=90, bbox_inches='tight')
     # plt.show()
-    plt.close()
+    plt.close(fig)
 
     # color_fig = plt.figure()
     # box = color_fig.add_subplot(111, aspect='equal')
@@ -145,11 +198,11 @@ def color3dshow(im, temp_folder, files):
     for i in im2:
         c = i * 1.2 / 255
         c = normalization(c)
-        ax.scatter(i[0], i[1], i[2], c=c, label='顺序点')
+        ax.scatter(i[0], i[1], i[2], c=[c], label='points')
     ax.set_zlabel('B', fontdict={'size': 15, 'color': 'red'})
     ax.set_ylabel('G', fontdict={'size': 15, 'color': 'red'})
     ax.set_xlabel('R', fontdict={'size': 15, 'color': 'red'})
-    plt.savefig(temp_folder + files[:-4] + '_colors_3D.png', dpi=90, bbox_inches='tight')
+    plt.savefig(temp_folder + files[:-4] + str(len(im)) + '_colors_3D.png', dpi=90, bbox_inches='tight')
     # plt.show()
     plt.close(fig)
 
@@ -161,7 +214,7 @@ def merge_color(CC):
         M = []
         M.append(c)
         for x in CC[1:]:
-            if cal_distance(c[2], x[2]) < 45:
+            if cal_distance(c[2], x[2], 2) < 45:
                 M.append(x)
         for a in M:
             try:
@@ -205,13 +258,16 @@ def ColorPalettePredict(image_name, files, colornum, temp_folder):
     :return:
     """
     im = cv2.imread(image_name)
+    # plt.imshow(im[:,:,::-1])
+    # plt.show()
+    # plt.close()
 
     """cluster color"""
     temp_im = cv2.cvtColor(im, cv2.COLOR_BGR2LAB)  # LAB optional, / cv2.COLOR_BGR2HSV)
     temp_in = temp_im.reshape((-1, 3))
 
     """kmeans for color clustering"""
-    Kcolor = KMeans(n_clusters=colornum)
+    Kcolor = KMeans(n_clusters=colornum, n_init=10)
     Kcolor.fit(temp_in)
     labels = Kcolor.predict(temp_in)
     cluster_colors = Kcolor.cluster_centers_
@@ -236,7 +292,7 @@ def ColorPalettePredict(image_name, files, colornum, temp_folder):
     color3dshow(cluster_rgb, temp_folder, files)
 
     """show color blocks"""
-    savename = temp_folder + files[:-4] + '_colors.png'
+    savename = temp_folder + files[:-4] + str(colornum) + '_colors.png'
     color_blocks(color_info, savename)
 
     """show color palette"""
@@ -249,7 +305,7 @@ def ColorPalettePredict(image_name, files, colornum, temp_folder):
     else:
         im2 = cv2.resize(im2, (int(im.shape[0]/4), im.shape[0]))
         img = cv2.hconcat([im.astype('int32'), im2.astype('int32')])
-    cv2.imwrite(temp_folder + files[:-4] + '_colorpalette.png', img)
+    cv2.imwrite(temp_folder + files[:-4] + str(colornum) + '_colorpalette.png', img)
 
     color_info = sorted(color_info, key=lambda x: x[1])
     return color_info

@@ -1,0 +1,13 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" 
+width="142.000000pt" height="52.000000pt" viewBox="0 0 142.000000 52.000000"
+preserveAspectRatio = "xMidYMid meet" >
+<metadata>
+Created by ZoeQU, 2022
+</metadata>
+<rect width="142.000000" height="52.000000" fill="#FBFAE4"/>
+<path d="M50 492 c0 -17 49 -81 97 -128 61 -59 147 -118 243 -167 41 -21 80 -44 85 -50 33 -40 122 -70 320 -108 123 -24 282 -30 293 -12 4 7 33 19 65 27 31 8 61 17 66 20 5 3 25 8 45 11 20 2 44 11 52 20 8 8 20 15 25 15 6 0 7 5 3 11 -7 12 -45 8 -129 -11 -76 -17 -394 -18 -424 -2 -12 8 -49 17 -80 22 -34 5 -98 28 -163 59 -58 28 -108 51 -111 51 -13 0 -161 93 -257 161 -127 91 -130 93 -130 81z" transform="translate(0.000000,52.000000) scale(0.100000,-0.100000)" stroke="none" fill="#95C155"/>
+
+</svg>

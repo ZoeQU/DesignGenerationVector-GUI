@@ -30,6 +30,16 @@ tmpPath = 'doc/temp/'
 if not os.path.exists(tmpPath):
     os.makedirs(tmpPath)
 
+# import sys
+# if sys.platform.startswith("win"):
+#     print("当前系统是Windows")
+# elif sys.platform.startswith("linux"):
+#     print("当前系统是Linux")
+# elif sys.platform.startswith("darwin"):
+#     print("当前系统是Mac OS")
+# else:
+#     print("当前系统是其他操作系统")
+
 
 def random_process(rect_color, height, width, pathes, files, svg_header):
     """
@@ -158,13 +168,16 @@ def main(motif, stripe, check, visualization, rasterization):
             f.close()
 
         a = 1
-        while a < 20:  # loop times == 20
-            n = ri(2, 8)
+        while a < 1:  # loop times == 20
+            # n = ri(2, 8)
+            n = 3
             for ff in os.listdir(colorPath):
                 image_name = colorPath + ff
                 color_palette_info = ColorPalettePredict(image_name, ff, n, temp_folder)
                 na = ff[5:-4]
-                check_generate(width=100, height=100, num=n, color=color_palette_info, na=na, a=a, outputCheck=outputCheck)
+                check_generate(width=100, height=100, num=n,
+                               color=color_palette_info,
+                               na=na, a=a, outputCheck=outputCheck)
             a += 1
 
         with open(outputCheck + "check_timecost.txt", "a") as f:
@@ -229,9 +242,9 @@ def main(motif, stripe, check, visualization, rasterization):
 
 
 if __name__ == '__main__':
-    main(motif=True, stripe=False, check=False, visualization=False, rasterization=False)
-
-
+    print("start!!!")
+    main(motif=False, stripe=False, check=True, visualization=False, rasterization=False)
+    print("finish!!!")
 
 
 

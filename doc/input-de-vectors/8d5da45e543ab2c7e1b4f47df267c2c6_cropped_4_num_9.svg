@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" 
+width="52.000000pt" height="80.000000pt" viewBox="0 0 52.000000 80.000000"
+preserveAspectRatio = "xMidYMid meet" >
+<metadata>
+Created by ZoeQU, 2022
+</metadata>
+<rect width="52.000000" height="80.000000" fill="#FBF5E8"/>
+<path d="M426 222 c-22 -27 -24 -32 -7 -17 20 17 47 55 39 55 -2 0 -16 -17 -32 -38z" transform="translate(0.000000,80.000000) scale(0.100000,-0.100000)" stroke="none" fill="#CCABB0"/>
+
+<path d="M498 263 c-17 -33 -14 -40 10 -24 8 4 12 19 10 32 -3 23 -4 23 -20 -8z" transform="translate(0.000000,80.000000) scale(0.100000,-0.100000)" stroke="none" fill="#CCABB0"/>
+
+<path d="M355 144 l-40 -36 43 32 c36 27 49 40 40 40 -2 0 -21 -16 -43 -36z" transform="translate(0.000000,80.000000) scale(0.100000,-0.100000)" stroke="none" fill="#CCABB0"/>
+
+<path d="M37 767 c-2 -7 -1 -30 4 -52 l8 -40 -2 45 -2 45 45 -2 c39 -1 41 -1 15 7 -45 12 -62 11 -68 -3z" transform="translate(0.000000,80.000000) scale(0.100000,-0.100000)" stroke="none" fill="#CCABB0"/>
+
+<path d="M243 70 c-81 -51 -96 -53 -104 -15 -6 27 -7 28 -8 5 -2 -48 12 -55 58 -32 54 28 121 71 121 77 0 7 2 8 -67 -35z" transform="translate(0.000000,80.000000) scale(0.100000,-0.100000)" stroke="none" fill="#CCABB0"/>
+
+<path d="M267 706 c119 -57 193 -138 220 -240 l13 -51 -6 45 c-3 25 -16 63 -29 85 -45 78 -160 166 -245 189 -14 4 7 -9 47 -28z" transform="translate(0.000000,80.000000) scale(0.100000,-0.100000)" stroke="none" fill="#CCABB0"/>
+
+<path d="M438 173 c-4 -10 -58 -48 -162 -116 -58 -38 -74 -53 -61 -56 11 -2 21 2 23 8 2 6 16 11 31 11 15 0 36 9 46 20 10 11 23 20 30 20 11 0 115 103 115 114 0 9 -18 7 -22 -1z" transform="translate(0.000000,80.000000) scale(0.100000,-0.100000)" stroke="none" fill="#CCABB0"/>
+
+<path d="M55 733 c3 -15 19 -129 35 -253 35 -263 61 -444 64 -447 1 -2 28 11 60 28 109 56 199 139 245 226 33 64 31 174 -6 248 -47 95 -211 194 -361 220 -42 7 -42 7 -37 -22z" transform="translate(0.000000,80.000000) scale(0.100000,-0.100000)" stroke="none" fill="#16154E"/>
+
+</svg>

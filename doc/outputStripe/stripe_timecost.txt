@@ -1,0 +1,7 @@
+start time:1659937918.0
+finish time:1659939731.9
+
+delt=1813.9(s)
+
+228 patterns
+average time cost: 8.0 (s)

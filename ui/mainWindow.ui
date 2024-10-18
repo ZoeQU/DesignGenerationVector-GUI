@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>746</width>
+    <height>444</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>ui/qu_icon_16x16.ico</normaloff>ui/qu_icon_16x16.ico</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="DownloadButton">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>400</y>
+      <width>199</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Download</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="ThreeDView">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>40</y>
+      <width>50</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>3D View</string>
+    </property>
+   </widget>
+   <widget class="QOpenGLWidget" name="ThreeDWidget">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>60</y>
+      <width>199</width>
+      <height>291</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+   </widget>
+   <widget class="QGraphicsView" name="graphicsView">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>60</y>
+      <width>189</width>
+      <height>291</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="TwoDView_2">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>40</y>
+      <width>50</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>2D View</string>
+    </property>
+   </widget>
+   <widget class="QGraphicsView" name="DesignElementView">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>120</y>
+      <width>251</width>
+      <height>91</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="ColorReferenceImage">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>220</y>
+      <width>165</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="plainText">
+     <string>Color Reference Image</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="LoadColorReferenceImage">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>220</y>
+      <width>80</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="LoadDesignElement">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>90</y>
+      <width>80</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="DesignEllement">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>90</y>
+      <width>165</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="plainText">
+     <string>Design Element</string>
+    </property>
+   </widget>
+   <widget class="QGraphicsView" name="ColorPaletteView">
+    <property name="geometry">
+     <rect>
+      <x>162</x>
+      <y>250</y>
+      <width>127</width>
+      <height>129</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QGraphicsView" name="ColorRefView">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>250</y>
+      <width>126</width>
+      <height>129</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="ReGenerateButton">
+    <property name="geometry">
+     <rect>
+      <x>169</x>
+      <y>400</y>
+      <width>82</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>ReGenerate</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="GenerateButton">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>400</y>
+      <width>83</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Generate</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="ScaleScrollBar">
+    <property name="geometry">
+     <rect>
+      <x>389</x>
+      <y>370</y>
+      <width>109</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Rotate">
+    <property name="geometry">
+     <rect>
+      <x>524</x>
+      <y>370</y>
+      <width>40</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Rotate</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="RotateScrollBar">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>370</y>
+      <width>109</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Scale">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>370</y>
+      <width>33</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Scale</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="NumColor">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>49</y>
+      <width>127</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Number of Color:</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="PatternTypecomboBox">
+    <property name="geometry">
+     <rect>
+      <x>163</x>
+      <y>20</y>
+      <width>126</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Motif</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Check</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Stripe</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QSpinBox" name="ColorSpinBox">
+    <property name="geometry">
+     <rect>
+      <x>163</x>
+      <y>49</y>
+      <width>126</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>3</number>
+    </property>
+    <property name="displayIntegerBase">
+     <number>10</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="PatternType">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>20</y>
+      <width>127</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pattern Type:</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -8,9 +8,11 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
+            // "cwd": "${fileDirname}",
             "program": "${file}",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": true,
+            "python": "/home/zoe/miniconda3/envs/py3.8/bin/python"
         }
     ]
 }

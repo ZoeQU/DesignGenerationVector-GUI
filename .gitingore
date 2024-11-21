@@ -34,7 +34,6 @@ __pycache__/
 
 # ignore specified folders
 doc/
-dundun/
 
 # ignore specified files
 py2.7-requirements.txt

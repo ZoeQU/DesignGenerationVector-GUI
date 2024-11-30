@@ -73,28 +73,32 @@ def vectorize_design_element(name, keep_elements, bk_color, color_img, visualiza
             cluster_rgb, sorted_cluster_rgb, labels = generate_color_palette(im, k)
 
             # generate color palette from input color_ref image
-            color, sorted_color, _ = generate_color_palette(color_img, k) 
-            color_block_path = processPath + 'motif_' + str(k) + '_color_blocks.png'
-            show_color_blocks(sorted_color, color_block_path)
+            if color_img is not None:
+                color, sorted_color, _ = generate_color_palette(color_img, k) 
+                color_block_path = processPath + 'motif_' + str(k) + '_color_blocks.png'
+                show_color_blocks(sorted_color, color_block_path)
 
-            mapping = create_mapping(sorted_cluster_rgb, cluster_rgb, sorted_color)
+                mapping = create_mapping(sorted_cluster_rgb, cluster_rgb, sorted_color)
 
-            # find bk_color
-            distance_value = []
-            for color_i in cluster_rgb:
-                distance_value.append([color_i, calculate_color_distance(bk_color, color_i)])
-            distance_value = sorted(distance_value, key=lambda x: x[1])
-            a = distance_value[0][0]
-            ind = cluster_rgb.index(a)
-            bk_color_2 = [bk_color, cluster_rgb[ind]]
-            if visualization:
-                show_color_blocks(bk_color_2, processPath + name + '_2_bk_colors.png')
-                
-            bk_color = cluster_rgb[ind]
+                # find bk_color
+                distance_value = []
+                for color_i in cluster_rgb:
+                    distance_value.append([color_i, calculate_color_distance(bk_color, color_i)])
+                distance_value = sorted(distance_value, key=lambda x: x[1])
+                a = distance_value[0][0]
+                ind = cluster_rgb.index(a)
+                bk_color_2 = [bk_color, cluster_rgb[ind]]
+                if visualization:
+                    show_color_blocks(bk_color_2, processPath + name + '_2_bk_colors.png')
+                    
+                bk_color = cluster_rgb[ind]
 
-            # show color blocks
-            if visualization:
-                show_color_blocks(cluster_rgb, processPath + name + '_color_blocks.png')
+                # show color blocks
+                if visualization:
+                    show_color_blocks(cluster_rgb, processPath + name + '_color_blocks.png')
+            else:
+                color_block_path = None
+
 
             # separate by color 
             colors = []
@@ -146,8 +150,11 @@ def vectorize_design_element(name, keep_elements, bk_color, color_img, visualiza
             viewBox = '0 0 ' + width[:-2] + ' ' + height[:-2]
 
             # generate svg's background path
-            bk_color_hex_ori = rgb_to_hex(bk_color) # don't delete, may use later
-            bk_color_hex = rgb_to_hex(find_corresponding_color(bk_color, mapping))
+            if color_img is not None:
+                bk_color_hex = rgb_to_hex(find_corresponding_color(bk_color, mapping))
+            else:
+                bk_color_hex = rgb_to_hex(bk_color)
+
             bkrecg = '<rect width="' + str(width[:-2]) + '" height="' + str(height[:-2]) \
                     + '" fill="' + str(bk_color_hex) + '"/>'
             temppng = svgPath + name + '_bk.png'
@@ -164,8 +171,12 @@ def vectorize_design_element(name, keep_elements, bk_color, color_img, visualiza
             pathes = []
             for q in range(len(colors)):
                 if rgb_to_hex(colors[q][0]) != bk_color_hex:
-                    fillcolor_ori = rgb_to_hex(colors[q][0]) # don't delete, may use later
-                    fillcolor=rgb_to_hex(find_corresponding_color(colors[q][0], mapping))
+                    
+                    if color_img is not None:
+                        fillcolor=rgb_to_hex(find_corresponding_color(colors[q][0], mapping))
+                    else:
+                        fillcolor = rgb_to_hex(colors[q][0])
+
                     color_mask_bmp = svgPath + name + '_color_' + str(q) + '.bmp'
                     cv2.imwrite(color_mask_bmp, colors[q][1])
 
@@ -211,13 +222,14 @@ def vectorize_design_element(name, keep_elements, bk_color, color_img, visualiza
             path_order = sorted(p_order, key=lambda x: x[0])
             num_af_filter = len(path_order) + 1
 
-            # # generate new vector graphic
-            # filename_ori = svgPath + name + '_ori_num_' + str(num_ori) + '.svg'
-            # generate_svg(width, height, viewBox, filename_ori, bkrecg, path_ori)
+            # generate new vector graphic
+            filename_ori = svgPath + name + '_ori_num_' + str(num_ori) + '.svg'
+            generate_svg(width, height, viewBox, filename_ori, bkrecg, path_ori)
 
             filename_filter = svgPath + name + '_filter_num_' + str(num_af_filter) + '.svg'
             generate_svg(width, height, viewBox, filename_filter, bkrecg, path_order)
-
+            png_name = svgPath + name + '_filter_num_' + str(num_af_filter) + '.png'
+            cairosvg.svg2png(url=filename_filter, write_to=png_name)
             # return [im_size, filename_ori, num_ori, filename_filter, num_af_filter]
             element_pathes.append(filename_filter)
         return element_pathes, color_block_path
@@ -231,5 +243,5 @@ if __name__=="__main__":
     img = cv2.imread(image_path)
     print(img.shape) # (243,338,3)
     name = "test_0"
-    element_pathes, color_block_path  = vectorize_design_element(name, keep_elements=[img], bk_color=[253, 240, 215], num_color=None, visualization=True)
+    element_pathes, color_block_path  = vectorize_design_element(name, keep_elements=[img], bk_color=[253, 240, 215], color_img=None, visualization=False)
     print("biu~biu~biu~")

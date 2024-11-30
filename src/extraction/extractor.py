@@ -23,7 +23,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def extract_foreground_elements(img, name, visualization):
+def extract_foreground_elements(img, name, thre, visualization):
     scale = 100 # resize scale
     if scale != 100:
         img = resize_img(img, scale)
@@ -63,11 +63,11 @@ def extract_foreground_elements(img, name, visualization):
         de_object_bboxes = [0, 0, w, h]
         de_segments = [[0, 0], [w, 0], [w, h], [0, h]]
 
-    print('crop element!')
-    return bk_color, cuttingImgs, bk_mask, de_segments, de_object_bboxes
+    print('crop element: ' + str(len(cuttingImgs)))
+    return bk_color, cuttingImgs, bk_mask, de_segments, de_object_bboxes, thre
 
 
-def remove_redundant_elements(name, cuttingImgs, visualization):
+def remove_redundant_elements(name, cuttingImgs, thre, visualization):
     Group = cuttingImgs 
 
     if len(Group) == 1:
@@ -91,7 +91,7 @@ def remove_redundant_elements(name, cuttingImgs, visualization):
         # if visualization:
         #     visualize_pie_chart(sim, processPath, "Perceptual Hashing")
 
-        thre = 0.1 # simlar threshod
+        # thre = 0.1 # simlar threshod
 
         Group_copy = Group.copy() 
         keep = []
@@ -108,6 +108,7 @@ def remove_redundant_elements(name, cuttingImgs, visualization):
                 contentMatchRatio = compare_images(Group_copy[i][2], t[2])
                 # print(contentMatchRatio)
                 similarity = contentMatchRatio
+                print(similarity)
                 if similarity > thre:
                     del_list.append(Group_copy[i])
 
@@ -131,9 +132,9 @@ def remove_redundant_elements(name, cuttingImgs, visualization):
         return Group, keep
     
 
-def extractor(img, name, visualization):
-    bk_color, cuttingImgs, bk_mask, de_segments, de_object_bboxes = extract_foreground_elements(img, name, visualization)
-    Group, keep = remove_redundant_elements(name, cuttingImgs, visualization)
+def extractor(img, name, thre, visualization):
+    bk_color, cuttingImgs, bk_mask, de_segments, de_object_bboxes, thre = extract_foreground_elements(img, name, thre, visualization)
+    Group, keep = remove_redundant_elements(name, cuttingImgs, thre, visualization)
     # print(len(Group), len(keep), bk_color)
     return bk_color, keep
 

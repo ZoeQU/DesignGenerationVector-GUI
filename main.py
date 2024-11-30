@@ -37,6 +37,7 @@ class Ui_MainWindow(object):
         self.element_pathes = None
         self.color_block_path = None
         self.svg_name = None
+        self.current_actor = None 
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -63,48 +64,62 @@ class Ui_MainWindow(object):
         self.label2DView.setGeometry(QtCore.QRect(330, 40, 50, 15))
         self.label2DView.setObjectName("label2DView")
 
+        # Load OBJ button
+        self.LoadOBJButton = QtWidgets.QPushButton(self.centralwidget)
+        self.LoadOBJButton.setGeometry(QtCore.QRect(520, 365, 95, 20))
+        self.LoadOBJButton.setObjectName("LoadOBJButton")
+        self.LoadOBJButton.setText("Load OBJ")
+        self.LoadOBJButton.clicked.connect(self.load_obj)
+
+        # Load Texture button
+        self.LoadTextureButton = QtWidgets.QPushButton(self.centralwidget)
+        self.LoadTextureButton.setGeometry(QtCore.QRect(625, 365, 92, 20))
+        self.LoadTextureButton.setObjectName("LoadTextureButton")
+        self.LoadTextureButton.setText("Load Texture")
+        self.LoadTextureButton.clicked.connect(self.change_texture)
+        
         # Load "input raster image" button
         self.LoadImageInput = QtWidgets.QPushButton(self.centralwidget)
-        self.LoadImageInput.setGeometry(QtCore.QRect(100, 90, 50, 20))
+        self.LoadImageInput.setGeometry(QtCore.QRect(100, 108, 50, 20))
         self.LoadImageInput.setObjectName("LoadImageInput")
         self.LoadImageInput.setText("Load")
         self.LoadImageInput.clicked.connect(self.load_input_image)
 
         # Load "input raster image" text
         self.ImageInput = QtWidgets.QPlainTextEdit(self.centralwidget)
-        self.ImageInput.setGeometry(QtCore.QRect(20, 90, 78, 20))
+        self.ImageInput.setGeometry(QtCore.QRect(20, 108, 78, 20))
         self.ImageInput.setObjectName("ImageInput")
 
         # "input raster image" view
         self.ImageInputView = QtWidgets.QGraphicsView(self.centralwidget)
-        self.ImageInputView.setGeometry(QtCore.QRect(20, 115, 130, 120))
+        self.ImageInputView.setGeometry(QtCore.QRect(20, 136, 130, 120))
         self.ImageInputView.setObjectName("InputImageView")
 
         # Load color reference image button
         self.LoadColorReferenceImage = QtWidgets.QPushButton(self.centralwidget)
-        self.LoadColorReferenceImage.setGeometry(QtCore.QRect(240, 90, 50, 20))
+        self.LoadColorReferenceImage.setGeometry(QtCore.QRect(240, 108, 50, 20))
         self.LoadColorReferenceImage.setObjectName("LoadColorReferenceImage")
         self.LoadColorReferenceImage.setText("Load")
         self.LoadColorReferenceImage.clicked.connect(self.load_color_reference_image)
 
         # Color reference image view
         self.ColorRefView = QtWidgets.QGraphicsView(self.centralwidget)
-        self.ColorRefView.setGeometry(QtCore.QRect(160, 115, 130, 120))
+        self.ColorRefView.setGeometry(QtCore.QRect(160, 136, 130, 120))
         self.ColorRefView.setObjectName("ColorRefView")
         
         # Color reference image text
         self.ColorReferenceImage = QtWidgets.QPlainTextEdit(self.centralwidget)
-        self.ColorReferenceImage.setGeometry(QtCore.QRect(160, 90, 78, 20))
+        self.ColorReferenceImage.setGeometry(QtCore.QRect(160, 108, 78, 20))
         self.ColorReferenceImage.setObjectName("ColorReferenceImage")
 
         # Color palette view
         self.ColorPaletteView = QtWidgets.QGraphicsView(self.centralwidget)
-        self.ColorPaletteView.setGeometry(QtCore.QRect(20, 265, 270, 128))
+        self.ColorPaletteView.setGeometry(QtCore.QRect(20, 290, 270, 103))
         self.ColorPaletteView.setObjectName("ColorPaletteView")
 
         # Color palette text
         self.ColorPaletteText = QtWidgets.QPlainTextEdit(self.centralwidget)
-        self.ColorPaletteText.setGeometry(QtCore.QRect(20, 240, 270, 20))
+        self.ColorPaletteText.setGeometry(QtCore.QRect(20, 264, 270, 20))
         self.ColorPaletteText.setObjectName("ColorPaletteText")
 
         # regenerate button
@@ -127,27 +142,18 @@ class Ui_MainWindow(object):
 
         # Scale label
         self.Scale = QtWidgets.QLabel(self.centralwidget)
-        self.Scale.setGeometry(QtCore.QRect(350, 370, 33, 15))
+        self.Scale.setGeometry(QtCore.QRect(340, 370, 33, 15))
         self.Scale.setObjectName("Scale")
 
         # Scale scrollbar
         self.ScaleScrollBar = QtWidgets.QSlider(self.centralwidget)
-        self.ScaleScrollBar.setGeometry(QtCore.QRect(389, 370, 110, 15))
+        self.ScaleScrollBar.setGeometry(QtCore.QRect(380, 370, 110, 15))
         self.ScaleScrollBar.setOrientation(QtCore.Qt.Horizontal)
         self.ScaleScrollBar.setObjectName("ScaleScrollBar")
         self.ScaleScrollBar.setMinimum(1)
         self.ScaleScrollBar.setMaximum(100)
         self.ScaleScrollBar.setValue(1)
         self.ScaleScrollBar.valueChanged.connect(self.scale_image)
-
-        # Rotate scrollbar
-        self.Rotate = QtWidgets.QLabel(self.centralwidget)
-        self.Rotate.setGeometry(QtCore.QRect(524, 370, 40, 15))
-        self.Rotate.setObjectName("Rotate")
-        self.RotateScrollBar = QtWidgets.QSlider(self.centralwidget)
-        self.RotateScrollBar.setGeometry(QtCore.QRect(570, 370, 109, 15))
-        self.RotateScrollBar.setOrientation(QtCore.Qt.Horizontal)
-        self.RotateScrollBar.setObjectName("RotateScrollBar")
 
         # num of color
         self.NumColor = QtWidgets.QLabel(self.centralwidget)
@@ -176,23 +182,52 @@ class Ui_MainWindow(object):
         self.ColorSpinBox.setMaximum(9) 
         self.ColorSpinBox.setObjectName("ColorSpinBox")
 
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        # # Rotate scrollbar
+        # self.Rotate = QtWidgets.QLabel(self.centralwidget)
+        # self.Rotate.setGeometry(QtCore.QRect(524, 370, 40, 15))
+        # self.Rotate.setObjectName("Rotate")
+        # self.RotateScrollBar = QtWidgets.QSlider(self.centralwidget)
+        # self.RotateScrollBar.setGeometry(QtCore.QRect(570, 370, 109, 15))
+        # self.RotateScrollBar.setOrientation(QtCore.Qt.Horizontal)
+        # self.RotateScrollBar.setObjectName("RotateScrollBar")
+
+        # Threhold scrollbar
+        self.ScrollBar = QtWidgets.QScrollBar(self.centralwidget)
+        self.ScrollBar.setGeometry(QtCore.QRect(35, 83, 140, 15))  # Position below the download button
+        self.ScrollBar.setOrientation(QtCore.Qt.Horizontal)
+        self.ScrollBar.setMinimum(-10)  # Set the scroll bar's minimum value
+        self.ScrollBar.setMaximum(10)   # Set the scroll bar's maximum value
+        self.ScrollBar.setValue(0)     # Default value
+        self.ScrollBar.setSingleStep(1)  # Smallest step
+        
+        # Label for scrollbar value
+        self.ScrollBarValueLabel = QtWidgets.QLabel(self.centralwidget)
+        self.ScrollBarValueLabel.setGeometry(QtCore.QRect(195, 83, 60, 15))  # Position next to the scrollbar
+        self.ScrollBarValueLabel.setObjectName("ScrollBarValueLabel")
+        self.ScrollBarValueLabel.setText("0.0")  # Default text
+
+        # Connect scrollbar value change to the update function
+        self.ScrollBar.valueChanged.connect(self.update_scrollbar_value)
 
         # VTK Renderer setup
         self.vtk_renderer = vtk.vtkRenderer()
+        self.vtk_renderer.SetBackground(0.5, 0.5, 0.5) 
         self.ThreeDWidget.GetRenderWindow().AddRenderer(self.vtk_renderer)
         self.iren = self.ThreeDWidget.GetRenderWindow().GetInteractor()
 
         # Load OBJ model
-        self.load_obj_model("/home/zoe/ResearchProjects/DesignGenerationVector/resources/3dModels/Shirt.obj")
+        self.load_obj_model("/home/zoe/ResearchProjects/DesignGenerationVector/resources/3dModels/cube.obj")
 
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Vector Pattern Auto-Generation"))
         self.DownloadButton.setText(_translate("MainWindow", "Download"))
+        self.LoadOBJButton.setText(_translate("MainWindow", "Load Obj"))
+        self.LoadTextureButton.setText(_translate("MainWindow", "Load Texture"))
         self.label3DView.setText(_translate("MainWindow", "3D View"))
         self.label2DView.setText(_translate("MainWindow", "2D View"))
         self.ColorReferenceImage.setPlainText(_translate("MainWindow", "ColorRef"))
@@ -202,7 +237,7 @@ class Ui_MainWindow(object):
         self.ColorPaletteText.setPlainText(_translate("MainWindow", "Color Palette"))
         self.ReGenerateButton.setText(_translate("MainWindow", "ReGenerate"))
         self.GenerateButton.setText(_translate("MainWindow", "Generate"))
-        self.Rotate.setText(_translate("MainWindow", "Rotate"))
+        # self.Rotate.setText(_translate("MainWindow", "Rotate"))
         self.Scale.setText(_translate("MainWindow", "Scale"))
         self.NumColor.setText(_translate("MainWindow", "Number of Color:"))
         self.PatternTypecomboBox.setItemText(0, _translate("MainWindow", "Motif"))
@@ -221,15 +256,24 @@ class Ui_MainWindow(object):
                 return
 
             # Save the PNG and SVG files
+            print(self.svg_name)
             self.save_file(self.color_block_path, folder_path)
             self.save_file(self.svg_name, folder_path)
 
             # Show success message
-            QMessageBox.information(None, "Success", f"Both images have been saved to:\n{folder_path}", QMessageBox.Ok)
+            QMessageBox.information(None, "Success", f"All images have been saved to:\n{folder_path}", QMessageBox.Ok)
 
         except Exception as e:
             # Display error message if something goes wrong
             QMessageBox.critical(None, "Error", f"An error occurred while saving files: {str(e)}", QMessageBox.Ok)
+    
+
+    def update_scrollbar_value(self):
+        value = self.ScrollBar.value()  
+        float_value = value / 10.0 
+        self.thre = float_value
+        print(self.thre)
+        self.ScrollBarValueLabel.setText(f"{float_value:.2f}")
 
 
     def save_file(self, source_path, target_folder):
@@ -265,7 +309,7 @@ class Ui_MainWindow(object):
             self.display_gengrate_images(self.svg_name, self.color_block_path)
             
         elif self.input_pattern_type == "Motif":
-            bk_color, keep  = extractor(self.input_design_image, self.name, visualization=True)
+            bk_color, keep  = extractor(self.input_design_image, self.name, self.thre, visualization=True)
             element_pathes, color_block_path = vectorize_design_element(self.name, keep, bk_color, self.input_color_image, visualization=True)
             self.color_block_path = color_block_path
             self.element_pathes = element_pathes
@@ -407,7 +451,28 @@ class Ui_MainWindow(object):
         self.ColorPaletteView.setScene(png_scene)
 
 
+    # def load_obj_model(self, filename):
+    #     reader = vtk.vtkOBJReader()
+    #     reader.SetFileName(filename)
+
+    #     mapper = vtk.vtkPolyDataMapper()
+    #     mapper.SetInputConnection(reader.GetOutputPort())
+
+    #     actor = vtk.vtkActor()
+    #     actor.SetMapper(mapper)
+
+    #     self.vtk_renderer.AddActor(actor)
+    #     self.vtk_renderer.ResetCamera()
+
+    #     self.ThreeDWidget.GetRenderWindow().Render()
+    #     self.iren.Initialize()
+        
+    
     def load_obj_model(self, filename):
+        """Load and display an OBJ file."""
+        if self.current_actor:
+            self.vtk_renderer.RemoveActor(self.current_actor)
+
         reader = vtk.vtkOBJReader()
         reader.SetFileName(filename)
 
@@ -417,11 +482,37 @@ class Ui_MainWindow(object):
         actor = vtk.vtkActor()
         actor.SetMapper(mapper)
 
-        self.vtk_renderer.AddActor(actor)
+        self.current_actor = actor
+        self.vtk_renderer.AddActor(self.current_actor)
         self.vtk_renderer.ResetCamera()
-
         self.ThreeDWidget.GetRenderWindow().Render()
-        self.iren.Initialize()
+
+    def load_obj(self):
+        """Open file dialog to load a new OBJ file."""
+        filename, _ = QFileDialog.getOpenFileName(None, "Open OBJ File", "", "OBJ Files (*.obj)")
+        if filename:
+            self.load_obj_model(filename)
+
+    def change_texture(self):
+        """Apply a texture to the current OBJ model."""
+        if not self.current_actor:
+            QtWidgets.QMessageBox.warning(None, "No Model", "Please load a model first.")
+            return
+
+        filename, _ = QFileDialog.getOpenFileName(None, "Open Texture File", "", "Image Files (*.png *.jpg *.bmp)")
+        if filename:
+            texture = vtk.vtkTexture()
+            if filename.lower().endswith(".png"):
+                reader = vtk.vtkPNGReader()
+            elif filename.lower().endswith(".jpg") or filename.lower().endswith(".jpeg"):
+                reader = vtk.vtkJPEGReader()
+            else:
+                QtWidgets.QMessageBox.warning(None, "Unsupported Format", "Only PNG and JPG formats are supported.")
+                return
+            reader.SetFileName(filename)
+            texture.SetInputConnection(reader.GetOutputPort())
+            self.current_actor.SetTexture(texture)
+            self.ThreeDWidget.GetRenderWindow().Render()
 
 
     def scale_image(self):

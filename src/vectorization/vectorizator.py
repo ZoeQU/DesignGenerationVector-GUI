@@ -228,8 +228,7 @@ def vectorize_design_element(name, keep_elements, bk_color, color_img, visualiza
 
             filename_filter = svgPath + name + '_filter_num_' + str(num_af_filter) + '.svg'
             generate_svg(width, height, viewBox, filename_filter, bkrecg, path_order)
-            png_name = svgPath + name + '_filter_num_' + str(num_af_filter) + '.png'
-            cairosvg.svg2png(url=filename_filter, write_to=png_name)
+
             # return [im_size, filename_ori, num_ori, filename_filter, num_af_filter]
             element_pathes.append(filename_filter)
         return element_pathes, color_block_path

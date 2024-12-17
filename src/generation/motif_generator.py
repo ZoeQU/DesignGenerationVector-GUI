@@ -23,8 +23,7 @@ from setting import savePath, imgPath, elementPath, processPath, keepPath, svgPa
 
 from utils.colorize_functions import rgb_to_hex, hex_to_rgb, hex_random, generate_color_palette, show_color_blocks 
 from .generate_functions import (generate_new_svg, rowgroup, striperowgroup, columgroup, mirror, generate_random_width, 
-                                draw_sequence, cal_loc, stripe_pathes, generate_golden_pattern, pares_svg)
-
+                                draw_sequence, cal_loc, stripe_pathes, generate_golden_pattern, parse_svg)
 
 
 
@@ -98,7 +97,7 @@ def generate_common_pattern(element, new_pattern_name, type, header, pattern_wid
 
 
 def generate_motif_pattern(element):
-    pathes_new, bk_hex, width, height, num = pares_svg(element)
+    pathes_new, bk_hex, width, height, num = parse_svg(element)
     
     name = element.split("/")[-1][:-4]
     pattern_width = 4 * int(width.split(".")[0])
@@ -114,14 +113,15 @@ def generate_motif_pattern(element):
 
     type_code = ri(0, 4)
 
-    type_list =  ['straight', 'tile', 'half-drop', 'mirror', 'customize-golden-ratio']
+    type_list =  ['straight', 'tile', 'half-drop', 'mirror', 'random'] # delete golden-ratio
     i = type_list[type_code]
     print("type code: " + i)
 
     if i != 'customize-golden-ratio':
         new_pattern_name = savePath + name + '_' + str(i) + '_pattern.svg'
         generate_common_pattern(element, new_pattern_name, i, pattern_header, pattern_width, pattern_height, bk_rect, pathes_new)
-
+    elif i == 'ranodom':
+        pass
     else:
         aa = int(10 * max(pattern_width / 4 , pattern_height / 4)/(1.618 * 1.618))
         pattern_path, bk_color = generate_golden_pattern(aa, element)

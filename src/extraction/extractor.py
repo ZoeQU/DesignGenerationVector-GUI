@@ -108,7 +108,7 @@ def remove_redundant_elements(name, cuttingImgs, thre, visualization):
                 contentMatchRatio = compare_images(Group_copy[i][2], t[2])
                 # print(contentMatchRatio)
                 similarity = contentMatchRatio
-                print(similarity)
+                # print(similarity)
                 if similarity > thre:
                     del_list.append(Group_copy[i])
 

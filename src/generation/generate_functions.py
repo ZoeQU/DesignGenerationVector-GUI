@@ -412,7 +412,7 @@ def read_svg(svg_name, temp_folder):
 
 
 
-def pares_svg(element):
+def parse_svg(element):
     doc = minidom.parse(element)
 
     # Extract height and width from the SVG element

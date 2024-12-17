@@ -1,4 +1,6 @@
+# -*- coding:utf-8 -*-
 #!/usr/bin/env python
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 import vtk

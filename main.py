@@ -6,6 +6,8 @@ from PyQt5.QtWidgets import QApplication, QGraphicsScene, QMainWindow, QPushButt
 from PyQt5.QtGui import QPixmap
 import sys
 import cv2
+from PIL import Image
+import subprocess
 import os
 import vtk
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor  #type: ignore
@@ -19,6 +21,8 @@ from src.vectorization.vectorizator import vectorize_design_element
 from src.generation.motif_generator import generate_motif_pattern
 from src.generation.check_generator import generate_check_pattern
 from src.generation.stripe_generator import generate_stripe_pattern
+from src.generation.single_iga import SignleGA
+from src.generation.multiple_iga import MultipleGA
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -193,7 +197,8 @@ class Ui_MainWindow(object):
 
         # Threhold scrollbar
         self.ScrollBar = QtWidgets.QScrollBar(self.centralwidget)
-        self.ScrollBar.setGeometry(QtCore.QRect(35, 83, 140, 15))  # Position below the download button
+        self.ScrollBar.setGeometry(QtCore.QRect(45, 83, 140, 15))  # Position below the download button
+        # self.ScrollBar.setGeometry(QtCore.QRect(155, 83, 90, 15))  # Position below the download button
         self.ScrollBar.setOrientation(QtCore.Qt.Horizontal)
         self.ScrollBar.setMinimum(-10)  # Set the scroll bar's minimum value
         self.ScrollBar.setMaximum(10)   # Set the scroll bar's maximum value
@@ -202,12 +207,22 @@ class Ui_MainWindow(object):
         
         # Label for scrollbar value
         self.ScrollBarValueLabel = QtWidgets.QLabel(self.centralwidget)
-        self.ScrollBarValueLabel.setGeometry(QtCore.QRect(195, 83, 60, 15))  # Position next to the scrollbar
+        self.ScrollBarValueLabel.setGeometry(QtCore.QRect(205, 83, 60, 15))  # Position next to the scrollbar
+        # self.ScrollBarValueLabel.setGeometry(QtCore.QRect(225, 83, 60, 15))  # Position next to the scrollbar
         self.ScrollBarValueLabel.setObjectName("ScrollBarValueLabel")
         self.ScrollBarValueLabel.setText("0.0")  # Default text
 
         # Connect scrollbar value change to the update function
         self.ScrollBar.valueChanged.connect(self.update_scrollbar_value)
+
+        # # Show "Hint" message
+        # self.Hint = QtWidgets.QPlainTextEdit(self.centralwidget)
+        # self.Hint.setGeometry(QtCore.QRect(20, 83, 200, 20))
+        # self.Hint.setObjectName("SvgOutput")
+        # self.Hint.setPlainText("Higher similarity thresholds yield more design elements.") 
+        # self.Hint.setStyleSheet("border: none; background: transparent;")
+        # self.Hint.setReadOnly(True) 
+        
 
         # VTK Renderer setup
         self.vtk_renderer = vtk.vtkRenderer()
@@ -245,6 +260,35 @@ class Ui_MainWindow(object):
         self.PatternTypecomboBox.setItemText(2, _translate("MainWindow", "Stripe"))
         self.PatternType.setText(_translate("MainWindow", "Pattern Type:"))
 
+    def convert_svg_to_png(self, svg_path, jpg_name):
+        """Convert an SVG file to PNG using rsvg-convert."""
+        try:
+            background_color=(255, 255, 255)
+            # 临时 PNG 文件路径
+            temp_png = jpg_name.replace(".jpg", ".png")
+
+            # 使用 Inkscape 命令行导出 PNG
+            command = [
+                "inkscape",
+                svg_path,
+                "--export-png", temp_png,  # 导出为 PNG
+                "--export-dpi", str(96),  # 设置分辨率
+                "--export-area-drawing"   # 导出绘图区域
+            ]
+            subprocess.run(command, check=True)
+            print(f"Successfully exported SVG to PNG: {temp_png}")
+
+            # 使用 Pillow 将 PNG 转换为 JPG
+            with Image.open(temp_png) as img:
+                rgb_image = Image.new("RGB", img.size, background_color)
+                rgb_image.paste(img, mask=img.split()[3])  # 使用 alpha 通道作为掩码
+                rgb_image.save(jpg_name, "JPEG", quality=95)
+            print(f"Successfully converted PNG to JPG: {jpg_name}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error during SVG to PNG conversion: {e}")
+        except Exception as e:
+            print(f"Error during PNG to JPG conversion: {e}")
+
 
     def download_button_click(self):
         print("Download button被click了")
@@ -256,9 +300,16 @@ class Ui_MainWindow(object):
                 return
 
             # Save the PNG and SVG files
-            print(self.svg_name)
+            # print(self.svg_name)
+            svg_name = self.svg_name
+            jpg_name = svg_name.split('.')[0] + '.jpg'
+            # print(png_name)
+
+            self.convert_svg_to_png(svg_name, jpg_name)
+            
             self.save_file(self.color_block_path, folder_path)
             self.save_file(self.svg_name, folder_path)
+            self.save_file(jpg_name, folder_path)
 
             # Show success message
             QMessageBox.information(None, "Success", f"All images have been saved to:\n{folder_path}", QMessageBox.Ok)
@@ -299,8 +350,6 @@ class Ui_MainWindow(object):
         self.input_pattern_type = self.PatternTypecomboBox.currentText()
         self.input_color_number = self.ColorSpinBox.value()
         print("Generate button被click了")
-        # print(self.input_pattern_type)
-        # print(self.input_color_number)
         
         if self.input_pattern_type == "Check":
             svg_name, color_block_path = generate_check_pattern(self.input_color_image, num=self.input_color_number)
@@ -309,14 +358,28 @@ class Ui_MainWindow(object):
             self.display_gengrate_images(self.svg_name, self.color_block_path)
             
         elif self.input_pattern_type == "Motif":
+            self.svg_name = savePath + "motif_generate.svg"
             bk_color, keep  = extractor(self.input_design_image, self.name, self.thre, visualization=True)
             element_pathes, color_block_path = vectorize_design_element(self.name, keep, bk_color, self.input_color_image, visualization=True)
             self.color_block_path = color_block_path
             self.element_pathes = element_pathes
-            for element_path in self.element_pathes:
-                svg_name = generate_motif_pattern(element_path)
-                self.svg_name = svg_name
-                self.display_gengrate_images(self.svg_name, self.color_block_path)
+
+            if len(self.element_pathes) > 1:
+                self.multiple_ga = MultipleGA(self.svg_name, self.element_pathes)
+                self.multiple_ga.generate_pattern()
+            else:
+                self.single_ga = SignleGA(self.svg_name, self.element_pathes[0])
+                self.single_ga.generate_pattern()
+
+            # # stright, tile, half-drop, mirror
+            # svg_name = generate_motif_pattern(self.element_pathes)
+            # self.svg_name = svg_name
+            # self.display_gengrate_images(self.svg_name, self.color_block_path)
+            # for element_path in self.element_pathes:
+            #     svg_name = generate_motif_pattern(element_path)
+            #     self.svg_name = svg_name
+                
+            self.display_gengrate_images(self.svg_name, self.color_block_path)
 
         else:
             svg_name, color_block_path = generate_stripe_pattern(self.input_color_image, num=self.input_color_number)
@@ -336,10 +399,13 @@ class Ui_MainWindow(object):
             self.display_gengrate_images(svg_name, color_block_path)
             
         elif self.input_pattern_type == "Motif":
-            for element_path in self.element_pathes:
-                svg_name = generate_motif_pattern(element_path)
+            if hasattr(self, "single_ga") and self.single_ga:  # 确保 SignleGA 已初始化
+                self.single_ga.generate_next_iteration()
 
-                self.display_gengrate_images(svg_name, self.color_block_path)
+            if hasattr(self, "multiple_ga") and self.multiple_ga:  # 确保 SignleGA 已初始化
+                self.multiple_ga.generate_next_iteration()
+            
+            self.display_gengrate_images(self.svg_name, self.color_block_path)
 
         else:
             svg_name, color_block_path = generate_stripe_pattern(self.input_color_image, num=self.input_color_number)
@@ -489,7 +555,8 @@ class Ui_MainWindow(object):
 
     def load_obj(self):
         """Open file dialog to load a new OBJ file."""
-        filename, _ = QFileDialog.getOpenFileName(None, "Open OBJ File", "", "OBJ Files (*.obj)")
+        filename, _ = QFileDialog.getOpenFileName(None, "Open OBJ File", "/home/zoe/ResearchProjects/DesignGenerationVector/resources/3dModels", "OBJ Files (*.obj)")
+
         if filename:
             self.load_obj_model(filename)
 
@@ -499,7 +566,7 @@ class Ui_MainWindow(object):
             QtWidgets.QMessageBox.warning(None, "No Model", "Please load a model first.")
             return
 
-        filename, _ = QFileDialog.getOpenFileName(None, "Open Texture File", "", "Image Files (*.png *.jpg *.bmp)")
+        filename, _ = QFileDialog.getOpenFileName(None, "Open Texture File", "/home/zoe/ResearchProjects/DesignGenerationVector/data/temp/temp_save", "Image Files (*.png *.jpg *.bmp)")
         if filename:
             texture = vtk.vtkTexture()
             if filename.lower().endswith(".png"):

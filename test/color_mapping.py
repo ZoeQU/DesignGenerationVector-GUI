@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 # def find_corresponding_c(A, B, C):
 #     # Create a mapping from elements of B to elements of C
 #     mapping = {tuple(b): c for b, c in zip(B, C)}

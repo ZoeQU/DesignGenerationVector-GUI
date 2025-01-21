@@ -36,6 +36,7 @@ __pycache__/
 data/
 ui/
 test/
+resources/
 src/extraction/yolov5-pytorch/
 
 # ignore specified files

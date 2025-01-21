@@ -41,3 +41,4 @@ src/extraction/yolov5-pytorch/
 
 # ignore specified files
 py2.7-requirements.txt
+main4paper2.py

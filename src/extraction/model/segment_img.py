@@ -48,7 +48,8 @@ def segment_img(img, maxIter, name, visualization):
 
     model.train()
     loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
+    # optimizer = optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
     label_colours = np.random.randint(200, size=(100, 3))  # random 200 color_rgb
 
     Loss_record = []

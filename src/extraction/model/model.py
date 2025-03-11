@@ -43,7 +43,8 @@ class MyNet(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
-        x = F.relu( x )
+        # x = F.relu( x )
+        x = F.leaky_relu(x)
         x = self.bn1(x)
         for i in range(2-1):
             x = self.conv2[i](x)

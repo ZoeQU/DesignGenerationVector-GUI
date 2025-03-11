@@ -64,6 +64,17 @@ def vectorize_design_element(name, keep_elements, bk_color, color_img, visualiza
             if im.shape[0] < 100 and im.shape[1] < 100:
                 im = cv2.resize(im, (2 * im.shape[1], 2 * im.shape[0]), interpolation=cv2.INTER_CUBIC)
 
+            if im is None:
+                raise ValueError("Image could not be loaded. Please check the input path.")
+
+            # 如果是灰度图像，转换为 BGR
+            if len(im.shape) == 2:
+                im = cv2.cvtColor(im, cv2.COLOR_GRAY2BGR)
+
+            # 如果数据类型不是 uint8，转换为 uint8
+            if im.dtype != 'uint8':
+                im = (im * 255).astype('uint8')
+
             im = cv2.fastNlMeansDenoisingColored(im, None, 5, 5, 3, 7)  # Denoise
             # adaptive calculate 'k'
             img_gray = cv2.cvtColor(im, cv2.COLOR_RGB2GRAY)

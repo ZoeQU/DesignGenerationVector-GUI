@@ -215,35 +215,6 @@ class MultipleGA():
         plt.axis('off') 
         plt.show()
 
-    # def generate_pattern(self):
-    #     self.toolbox.register("mate", tools.cxTwoPoint)
-    #     self.toolbox.register("mutate", self.custom_mutate)
-    #     self.toolbox.register("select", tools.selTournament, tournsize=3)
-
-    #     population = self.toolbox.population(n=10)
-    #     for generation in range(100):
-    #         print(f"Generation {generation + 1}")
-    #         individual = random.choice(population)
-    #         self.draw_pattern(individual)
-    #         feedback = input("Do you like this layout? (y/n): ").strip().lower()
-    #         if feedback == 'y':
-    #             print("Optimization finished! Final layout:")
-    #             self.draw_pattern(individual)
-    #             break
-
-    #         offspring = self.toolbox.select(population, len(population))
-    #         offspring = list(map(self.toolbox.clone, offspring))
-    #         for child1, child2 in zip(offspring[::2], offspring[1::2]):
-    #             if random.random() < 0.5:
-    #                 self.toolbox.mate(child1, child2)
-    #                 del child1.fitness.values
-    #                 del child2.fitness.values
-    #         for mutant in offspring:
-    #             if random.random() < 0.2:
-    #                 self.toolbox.mutate(mutant)
-    #                 del mutant.fitness.values
-    #         population[:] = offspring
-    #     print("Process finished.")
 
     def generate_pattern(self):
         """初始化种群和遗传算法设置"""
@@ -257,27 +228,96 @@ class MultipleGA():
         self.current_generation = 0  # 当前代数
         print("Initialization complete. Starting generation process...")
 
-        # 开始生成第一代
-        self.generate_next_iteration()
+        # 开始生成第一代图案
+        svg_names = []
+        candidates = []
+        for i in range(6):  # 生成 6 个图案
+            individual = random.choice(self.population)  # 从种群中随机选择个体
+            svg_name = f"{self.savename.replace('.svg', '')}_gen_0_ind_{i}.svg"
+            self.savename = svg_name
+            self.draw_pattern(individual)  # 绘制图案并保存
+            print(f"Generated {svg_name}")
+            svg_names.append(svg_name)
+            candidates.append(individual)
 
-    def generate_next_iteration(self):
-        """生成下一代"""
+        # 保存第一代的候选个体
+        self.candidates = candidates
+        return svg_names
+
+    # def generate_next_iteration(self):
+    #     """生成下一代"""
+    #     if self.current_generation >= 100:  # 达到最大代数时停止
+    #         print("Reached maximum generations. Process finished.")
+    #         return
+
+    #     print(f"Generation {self.current_generation + 1}")
+
+    #     # 从种群中随机选择一个个体，并绘制图案
+    #     individual = random.choice(self.population)
+    #     self.draw_pattern(individual)  # 绘制当前图案
+    #     self.current_individual = individual  # 保存当前个体以备需要
+
+    #     # 用户反馈逻辑改成由外部触发（例如通过按钮或事件）
+    #     print("Waiting for user feedback...")  # 提示，需要由外部调用处理反馈
+
+    #     # 将当前代数更新（不立即生成下一代，等待用户交互）
+    #     self.current_generation += 1
+    
+    def generate_next_iteration(self, selected_indices):
+        """生成下一代图案 (交互式遗传算法)"""
         if self.current_generation >= 100:  # 达到最大代数时停止
             print("Reached maximum generations. Process finished.")
             return
 
         print(f"Generation {self.current_generation + 1}")
 
-        # 从种群中随机选择一个个体，并绘制图案
-        individual = random.choice(self.population)
-        self.draw_pattern(individual)  # 绘制当前图案
-        self.current_individual = individual  # 保存当前个体以备需要
+        # Step 1: 从用户选择的索引中提取对应的个体
+        selected_individuals = [self.candidates[idx] for idx in selected_indices]
 
-        # 用户反馈逻辑改成由外部触发（例如通过按钮或事件）
-        print("Waiting for user feedback...")  # 提示，需要由外部调用处理反馈
+        if not selected_individuals:
+            print("No designs selected. Exiting...")
+            return []
 
-        # 将当前代数更新（不立即生成下一代，等待用户交互）
+        # Step 2: 遗传操作（交叉和变异）
+        offspring = []
+        while len(offspring) < len(self.population):
+            # 随机选择两个用户喜欢的个体进行交叉
+            parent1, parent2 = random.sample(selected_individuals, 2)
+            child1, child2 = self.toolbox.clone(parent1), self.toolbox.clone(parent2)
+
+            # 交叉
+            if random.random() < 0.5:  # 50% 交叉概率
+                self.toolbox.mate(child1, child2)
+
+            # 变异
+            if random.random() < 0.2:  # 20% 变异概率
+                self.toolbox.mutate(child1)
+            if random.random() < 0.2:
+                self.toolbox.mutate(child2)
+
+            offspring.append(child1)
+            if len(offspring) < len(self.population):
+                offspring.append(child2)
+
+        # Step 3: 更新种群并进入下一代
+        self.population[:] = selected_individuals + offspring[:len(self.population) - len(selected_individuals)]
         self.current_generation += 1
+
+        # Step 4: 生成下一代图案
+        svg_names = []
+        self.candidates = []
+        for i in range(6):  # 生成 6 个图案
+            individual = random.choice(self.population)  # 从种群中随机选择个体
+            svg_name = f"{self.savename.replace('.svg', '')}_gen_ind_{i}.svg"
+            self.savename = svg_name
+            self.draw_pattern(individual)  # 绘制图案并保存
+            print(f"Generated {svg_name}")
+            svg_names.append(svg_name)
+            self.candidates.append(individual)
+
+        print(f"Finished generation {self.current_generation}.")
+        return svg_names
+
 
 if __name__ == "__main__":
     design_elements = [

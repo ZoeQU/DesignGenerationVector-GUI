@@ -261,24 +261,90 @@ class SignleGA():
         self.population = self.toolbox.population(n=10)  # 初始化种群
         self.current_generation = 0  # 当前代数
 
-        # 调用生成下一代的方法
-        self.generate_next_iteration()
+        self.candidates = []  # 清空候选个体
 
-    def generate_next_iteration(self):
+        svg_names = []  # 保存生成的图案路径
+        for i in range(6):  # 生成 6 个图案
+            individual = random.choice(self.population)  # 从种群中随机选择一个个体
+            svg_name = f"{self.savename.replace('.svg', '')}_gen_{self.current_generation}_ind_{i}.svg"
+            self.savename = svg_name
+            self.draw_single_pattern(individual)  # 绘制图案并保存
+            print(f"Generated {svg_name}")
+            svg_names.append(svg_name)
+            self.candidates.append(individual)  # 保存当前代候选个体
+
+        return svg_names  # 返回第一代图案路径
+
+        
+    def generate_next_iteration(self, selected_indices):
         """生成下一代图案"""
         if self.current_generation >= 100:  # 达到最大代数时停止
             print("Reached maximum generations.")
             return
 
         print(f"Generation {self.current_generation + 1}")
-        individual = random.choice(self.population)
-        self.draw_single_pattern(individual)  # 绘制当前图案
-        self.current_individual = individual  # 保存当前个体
 
-        # 更新代数
-        self.current_generation += 1
-        print("Process finished.")
+        # Step 1: 从用户选择的索引中提取对应的个体
+        selected_individuals = [self.candidates[idx] for idx in selected_indices]
 
+        if not selected_individuals:
+            print("No designs selected. Exiting...")
+            return []
+
+        # Step 2: 基于用户选择的图案生成下一代
+        offspring = []
+        while len(offspring) < len(self.population):  # 保持种群大小不变
+            # 随机选择两个父代进行交叉
+            parent1, parent2 = random.sample(selected_individuals, 2)
+            child1, child2 = self.toolbox.clone(parent1), self.toolbox.clone(parent2)
+
+            # 交叉操作
+            if random.random() < 0.5:  # 50% 概率进行交叉
+                self.toolbox.mate(child1, child2)
+
+            # 变异操作
+            if random.random() < 0.2:  # 20% 概率进行变异
+                self.toolbox.mutate(child1)
+            if random.random() < 0.2:
+                self.toolbox.mutate(child2)
+
+            offspring.append(child1)
+            if len(offspring) < len(self.population):  # 如果未达到种群大小，添加第二个子代
+                offspring.append(child2)
+
+        # 更新种群为新一代
+        self.population[:] = offspring
+        self.current_generation += 1  # 更新代数
+
+        # Step 3: 生成新一代图案
+        svg_names = []  # 保存生成的图案路径
+        self.candidates = []  # 更新当前代的候选个体
+        for i in range(6):  # 生成 6 个图案
+            individual = random.choice(self.population)  # 从种群中随机选择一个个体
+            svg_name = f"{self.savename.replace('.svg', '')}_gen_ind_{i}.svg"
+            self.savename = svg_name
+            self.draw_single_pattern(individual)  # 绘制图案并保存
+            print(f"Generated {svg_name}")
+            svg_names.append(svg_name)
+            self.candidates.append(individual)
+
+        print(f"Finished generation {self.current_generation}.")
+        return svg_names  # 返回新一代图案路径
+
+    # def generate_next_iteration(self):
+    #     """生成下一代图案"""
+    #     if self.current_generation >= 100:  # 达到最大代数时停止
+    #         print("Reached maximum generations.")
+    #         return
+
+    #     print(f"Generation {self.current_generation + 1}")
+    #     individual = random.choice(self.population)
+    #     self.draw_single_pattern(individual)  # 绘制当前图案
+    #     self.current_individual = individual  # 保存当前个体
+
+    #     # 更新代数
+    #     self.current_generation += 1
+    #     print("Process finished.")
 
 if __name__ == "__main__":
     design_element = "/home/zoe/ResearchProjects/DesignGenerationVector/data/temp/svg/test_filter_num_28.svg"

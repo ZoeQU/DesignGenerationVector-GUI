@@ -33,7 +33,7 @@ __pycache__/
 
 
 # ignore specified folders
-data/
+data/*
 ui/
 test/
 resources/

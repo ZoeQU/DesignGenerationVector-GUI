@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt
 
 from setting import savePath, imgPath, elementPath, processPath, keepPath, svgPath, colorrefPath
 
-from utils.colorize_functions import (colorize_histogram, show_color_blocks, calculate_color_distance, 
+from utils.colorize_functions import (colorize_histogram, show_color_blocks_basic, show_color_blocks, calculate_color_distance, 
                                 rgb_to_hex, generate_color_palette)
 from .vectorize_functions import (create_temp_svg, vectorize_color_region)
 
@@ -81,13 +81,13 @@ def vectorize_design_element(name, keep_elements, bk_color, color_img, visualiza
             k = colorize_histogram(img_gray, name, visualization)
 
             # # k-means for color reduction
-            cluster_rgb, sorted_cluster_rgb, labels = generate_color_palette(im, k)
+            cluster_rgb, sorted_cluster_rgb, pantone_codes, labels = generate_color_palette(im, k)
 
             # generate color palette from input color_ref image
             if color_img is not None:
-                color, sorted_color, _ = generate_color_palette(color_img, k) 
+                color, sorted_color, pantone_codes, _ = generate_color_palette(color_img, k) 
                 color_block_path = processPath + 'motif_' + str(k) + '_color_blocks.png'
-                show_color_blocks(sorted_color, color_block_path)
+                show_color_blocks(sorted_color, color_block_path, pantone_codes)
 
                 mapping = create_mapping(sorted_cluster_rgb, cluster_rgb, sorted_color)
 
@@ -99,14 +99,15 @@ def vectorize_design_element(name, keep_elements, bk_color, color_img, visualiza
                 a = distance_value[0][0]
                 ind = cluster_rgb.index(a)
                 bk_color_2 = [bk_color, cluster_rgb[ind]]
+
                 if visualization:
-                    show_color_blocks(bk_color_2, processPath + name + '_2_bk_colors.png')
+                    show_color_blocks_basic(bk_color_2, processPath + name + '_2_bk_colors.png')
                     
                 bk_color = cluster_rgb[ind]
 
                 # show color blocks
                 if visualization:
-                    show_color_blocks(cluster_rgb, processPath + name + '_color_blocks.png')
+                    show_color_blocks_basic(cluster_rgb, processPath + name + '_color_blocks.png')
             else:
                 color_block_path = None
 

@@ -50,8 +50,8 @@ def _generate_check_pattern(img, num, index):
     # Generate color palette (only for the first call)
     if index == 0:
         color_block_path = processPath + 'color_palette.png'
-        color, sorted_color, labels = generate_color_palette(img, num) 
-        show_color_blocks(sorted_color, color_block_path)
+        color, sorted_color, pantone_codes, _ = generate_color_palette(img, num) 
+        show_color_blocks(sorted_color, color_block_path, pantone_codes)
     else:
         color_block_path = None
 

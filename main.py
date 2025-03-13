@@ -563,7 +563,7 @@ class Ui_MainWindow(object):
 
 
     def display_gengrate_images(self, svg_names, color_pallete_name):
-        """展示生成的 6 个图案"""
+        ##### show 6 generated patterns & color palette image
         # 确保 `svg_names` 是一个包含 6 个路径的列表
         if len(svg_names) != 6:
             print("Error: Please provide exactly 6 SVG file paths.")
@@ -589,7 +589,7 @@ class Ui_MainWindow(object):
         display_svg(self.graphicsView22, svg_names[4])  # 显示第 5 个图案
         display_svg(self.graphicsView23, svg_names[5])  # 显示第 6 个图案
         
-        # Load and display the PNG
+        # Load and display the color palette img
         png_scene = QtWidgets.QGraphicsScene()
         png_image = QtGui.QPixmap(color_pallete_name) 
         png_scene.addPixmap(png_image)

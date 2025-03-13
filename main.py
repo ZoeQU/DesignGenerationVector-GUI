@@ -19,8 +19,10 @@ from utils import image_processing
 from src.extraction.extractor import extractor
 from src.vectorization.vectorizator import vectorize_design_element
 from src.generation.motif_generator import generate_motif_pattern
-from src.generation.check_generator import generate_check_pattern
-from src.generation.stripe_generator import generate_stripe_pattern
+# from src.generation.check_generator import generate_check_pattern
+# from src.generation.stripe_generator import generate_stripe_pattern
+from src.generation.check_generator import Check
+from src.generation.stripe_generator import Stripe
 from src.generation.single_iga import SignleGA
 from src.generation.multiple_iga import MultipleGA
 
@@ -407,9 +409,10 @@ class Ui_MainWindow(object):
         self.input_pattern_type = self.PatternTypecomboBox.currentText()
         self.input_color_number = self.ColorSpinBox.value()
         print("Generate button被click了")
-        
+
         if self.input_pattern_type == "Check":
-            savenames, color_block_path = generate_check_pattern(self.input_color_image, num=self.input_color_number)
+            check = Check()
+            savenames, color_block_path = check.generate_check_pattern(self.input_color_image, num=self.input_color_number)
             self.svg_names = savenames
             self.color_block_path = color_block_path
             self.display_gengrate_images(self.svg_names, self.color_block_path)
@@ -439,7 +442,8 @@ class Ui_MainWindow(object):
             self.display_gengrate_images(self.svg_names, self.color_block_path)
 
         else:  # generate stripe pattern
-            savenames, color_block_path = generate_stripe_pattern(self.input_color_image, num=self.input_color_number)
+            stripe = Stripe()
+            savenames, color_block_path = stripe.generate_stripe_pattern(self.input_color_image, num=self.input_color_number)
             self.svg_names = savenames
             self.color_block_path = color_block_path
             self.display_gengrate_images(self.svg_names, self.color_block_path)
@@ -451,9 +455,9 @@ class Ui_MainWindow(object):
         self.input_color_number = self.ColorSpinBox.value()
                 
         if self.input_pattern_type == "Check":
-            svg_name, color_block_path = generate_check_pattern(self.input_color_image, num=self.input_color_number)
-            self.color_block_path = color_block_path
-            self.display_gengrate_images(svg_name, color_block_path)
+            check = Check()
+            savenames_, color_block_path_ = check.generate_check_pattern(self.input_color_image, num=self.input_color_number)
+            self.display_gengrate_images(savenames_, color_block_path_)
             
         elif self.input_pattern_type == "Motif":
             # if hasattr(self, "single_ga") and self.single_ga:  # 确保 SignleGA 已初始化
@@ -476,9 +480,9 @@ class Ui_MainWindow(object):
                 self.display_gengrate_images(self.svg_names, self.color_block_path)  # 显示生成的图案
                 
         else:
-            svg_name, color_block_path = generate_stripe_pattern(self.input_color_image, num=self.input_color_number)
-            self.display_gengrate_images(svg_name, color_block_path)
-
+            stripe = Stripe()
+            savenames_, color_block_path_ = stripe.generate_stripe_pattern(self.input_color_image, num=self.input_color_number)
+            self.display_gengrate_images(savenames_, color_block_path_)
 
     def load_svg(self):
         # Open file dialog to select SVG

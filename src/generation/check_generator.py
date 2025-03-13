@@ -27,9 +27,9 @@ from .generate_functions import (generate_new_svg, striperowgroup, generate_rand
                                 draw_sequence, cal_loc, stripe_pathes)
 
 
+savenames = []
 
-
-def generate_check_pattern(img, num):
+def _generate_check_pattern(img, num, index):
     width = 200
     height = 200
     patternwidth = 4 * width
@@ -43,9 +43,17 @@ def generate_check_pattern(img, num):
         num_h = num
     viewBox = '0 0 ' + str(patternwidth) + ' ' + str(patternheight)
 
-    color_block_path = processPath + 'check_' + str(num) + '_color_blocks.png'
-    color, sorted_color, labels = generate_color_palette(img, num) 
-    show_color_blocks(sorted_color, color_block_path)
+    # color_block_path = processPath + 'check_' + str(num) + '_color_blocks.png'
+    # color, sorted_color, labels = generate_color_palette(img, num) 
+    # show_color_blocks(sorted_color, color_block_path)
+
+    # Generate color palette (only for the first call)
+    if index == 0:
+        color_block_path = processPath + 'color_palette.png'
+        color, sorted_color, labels = generate_color_palette(img, num) 
+        show_color_blocks(sorted_color, color_block_path)
+    else:
+        color_block_path = None
 
     # vertical stripes 
     widths = generate_random_width(width, num_w)
@@ -78,15 +86,20 @@ def generate_check_pattern(img, num):
                    'width="' + str(patternwidth) + '" height="' + str(patternheight) + '" viewBox="' + str(viewBox) + '"' + '\n' \
                    'preserveAspectRatio = "xMidYMid meet" >'
 
-    savename = savePath + 'check_' + str(num) + '.svg'
-    savename_ = savePath + 'check_' + str(num) + '.png'
+    savename = savePath + 'check_' + str(index) + '.svg'
+    savename_ = savePath + 'check_' + str(index) + '.png'
     generate_new_svg(savename, check_header, pathes, new_bk_rect='')
     cairosvg.svg2png(url=savename, write_to=savename_)
 
     return savename, color_block_path
     
 
+def generate_check_pattern(img, num):
+    for i in range(6):
+        savename, color_block_path = _generate_check_pattern(img, num, i)
+        savenames.append(savename)
 
+    return savenames, color_block_path
 
 if __name__ == "__main__":
     img_path = "/home/zoe/ResearchProjects/DesignGenerationVector/data/color_ref/color_ref_0.jpg"

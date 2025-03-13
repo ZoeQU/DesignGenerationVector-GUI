@@ -409,10 +409,10 @@ class Ui_MainWindow(object):
         print("Generate button被click了")
         
         if self.input_pattern_type == "Check":
-            svg_name, color_block_path = generate_check_pattern(self.input_color_image, num=self.input_color_number)
-            self.svg_name = svg_name
+            savenames, color_block_path = generate_check_pattern(self.input_color_image, num=self.input_color_number)
+            self.svg_names = savenames
             self.color_block_path = color_block_path
-            self.display_gengrate_images(self.svg_name, self.color_block_path)
+            self.display_gengrate_images(self.svg_names, self.color_block_path)
             
         elif self.input_pattern_type == "Motif":
             self.svg_name = savePath + "motif_generate.svg"
@@ -439,10 +439,10 @@ class Ui_MainWindow(object):
             self.display_gengrate_images(self.svg_names, self.color_block_path)
 
         else:  # generate stripe pattern
-            svg_name, color_block_path = generate_stripe_pattern(self.input_color_image, num=self.input_color_number)
-            self.svg_name = svg_name
+            savenames, color_block_path = generate_stripe_pattern(self.input_color_image, num=self.input_color_number)
+            self.svg_names = savenames
             self.color_block_path = color_block_path
-            self.display_gengrate_images(self.svg_name, self.color_block_path)
+            self.display_gengrate_images(self.svg_names, self.color_block_path)
 
 
     def regenerate_button_click(self):

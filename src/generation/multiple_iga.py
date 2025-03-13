@@ -330,7 +330,7 @@ class MultipleGA():
         self.candidates = []
         for i in range(6):  # 生成 6 个图案
             individual = random.choice(self.population)  # 从种群中随机选择个体
-            svg_name = f"{self.savename.replace('.svg', '')}_gen_ind_{i}.svg"
+            svg_name = f"{self.savename.replace('.svg', '')}_gen_{i}.svg"
             self.savename = svg_name
             self.draw_pattern(individual)  # 绘制图案并保存
             print(f"Generated {svg_name}")

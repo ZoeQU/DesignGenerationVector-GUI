@@ -102,8 +102,8 @@ class MultipleGA():
             })
 
         self.bk_color = bk_color
-        self.rect_length = 2 * max(max(de['width'] for de in self.design_elements),
-                                   max(de['height'] for de in self.design_elements))
+        self.rect_length = 4 * max(max(de['width'] for de in self.design_elements),
+                                   max(de['height'] for de in self.design_elements))  # ori 2 times
 
         # 设置个体与种群
         creator.create("FitnessMax", base.Fitness, weights=(1.0,))
@@ -128,25 +128,47 @@ class MultipleGA():
         for i, design_element in enumerate(self.design_elements):
             deviation = design_element["deviation"]
 
-            while True:
-                # 随机生成 cx, cy，scale 和 rotation
-                scale = random.uniform(0.3, 1)
-                cx = random.uniform(0, self.rect_length)
-                cy = random.uniform(0, self.rect_length)
-                rotation = random.uniform(0, 360)
+            # while True:
+            #     # 随机生成 cx, cy，scale 和 rotation
+            #     scale = random.uniform(0.3, 1)
+            #     cx = random.uniform(0, self.rect_length)
+            #     cy = random.uniform(0, self.rect_length)
+            #     rotation = random.uniform(0, 360)
 
-                # 调整位置，确保在画布范围内
-                cx, cy = adjust_position_to_fit_bounds(cx, cy, deviation, scale, self.rect_length)
+            #     # 调整位置，确保在画布范围内
+            #     cx, cy = adjust_position_to_fit_bounds(cx, cy, deviation, scale, self.rect_length)
 
-                # 计算边界框
-                new_box = calculate_bounding_box(cx, cy, deviation, scale)
+            #     # 计算边界框
+            #     new_box = calculate_bounding_box(cx, cy, deviation, scale)
 
-                # 检查是否与已有元素重叠
-                if not is_overlap(new_box, existing_boxes):
-                    # 如果不重叠，添加到现有边界框列表，并存入个体
-                    existing_boxes.append(new_box)
-                    individual.append([cx, cy, scale, rotation, i])  # i 是 design element 的索引
-                    break
+            #     # 检查是否与已有元素重叠
+            #     if not is_overlap(new_box, existing_boxes):
+            #         # 如果不重叠，添加到现有边界框列表，并存入个体
+            #         existing_boxes.append(new_box)
+            #         individual.append([cx, cy, scale, rotation, i])  # i 是 design element 的索引
+            #         break
+
+            # 每个设计元素复制两份
+            for replication in range(2):  # 至少复制一份
+                while True:
+                    # 随机生成 cx, cy，scale 和 rotation
+                    scale = random.uniform(0.3, 1)
+                    cx = random.uniform(0, self.rect_length)
+                    cy = random.uniform(0, self.rect_length)
+                    rotation = random.uniform(0, 360)
+
+                    # 调整位置，确保在画布范围内
+                    cx, cy = adjust_position_to_fit_bounds(cx, cy, deviation, scale, self.rect_length)
+
+                    # 计算边界框
+                    new_box = calculate_bounding_box(cx, cy, deviation, scale)
+
+                    # 检查是否与已有元素重叠
+                    if not is_overlap(new_box, existing_boxes):
+                        # 如果不重叠，添加到现有边界框列表，并存入个体
+                        existing_boxes.append(new_box)
+                        individual.append([cx, cy, scale, rotation, i])  # i 是 design element 的索引
+                        break
 
         return creator.Individual(individual)
 

@@ -9,6 +9,7 @@ import cv2
 from PIL import Image
 import subprocess
 import os
+import time
 import vtk
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor  #type: ignore
 
@@ -275,6 +276,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Vector Pattern Auto-Generation"))
@@ -411,11 +413,15 @@ class Ui_MainWindow(object):
         print("Generate button被click了")
 
         if self.input_pattern_type == "Check":
+            time0 = time.time()
             check = Check()
             savenames, color_block_path = check.generate_check_pattern(self.input_color_image, num=self.input_color_number)
             self.svg_names = savenames
             self.color_block_path = color_block_path
             self.display_gengrate_images(self.svg_names, self.color_block_path)
+
+            duration_check = time.time() - time0
+            print("check duration is: ", duration_check)
             
         elif self.input_pattern_type == "Motif":
             self.svg_name = savePath + "motif_generate.svg"
@@ -424,6 +430,7 @@ class Ui_MainWindow(object):
             self.color_block_path = color_block_path
             self.element_pathes = element_pathes
 
+            time1 = time.time()
             if len(self.element_pathes) > 1:
                 self.multiple_ga = MultipleGA(self.svg_name, self.element_pathes)
                 self.svg_names = self.multiple_ga.generate_pattern()
@@ -441,12 +448,19 @@ class Ui_MainWindow(object):
                 
             self.display_gengrate_images(self.svg_names, self.color_block_path)
 
+            duration_motif = time.time() - time1
+            print("motif duration is: ", duration_motif)
+
         else:  # generate stripe pattern
+            time2 = time.time()
             stripe = Stripe()
             savenames, color_block_path = stripe.generate_stripe_pattern(self.input_color_image, num=self.input_color_number)
             self.svg_names = savenames
             self.color_block_path = color_block_path
             self.display_gengrate_images(self.svg_names, self.color_block_path)
+
+            duration_stripe = time.time() - time2
+            print("stripe duration is: ", duration_stripe)
 
 
     def regenerate_button_click(self):
@@ -469,6 +483,7 @@ class Ui_MainWindow(object):
             #     self.display_gengrate_images(next_gen_svg_names)
             
             # 根据用户选择生成下一代
+            time1 = time.time()
             if hasattr(self, "multiple_ga") and hasattr(self, "selected_indices"):
                 next_svg_names = self.multiple_ga.generate_next_iteration(self.selected_indices)
                 self.svg_names = next_svg_names  # 更新当前代的图案文件
@@ -478,7 +493,9 @@ class Ui_MainWindow(object):
                 next_svg_names = self.single_ga.generate_next_iteration(self.selected_indices)
                 self.svg_names = next_svg_names  # 更新当前代的图案文件
                 self.display_gengrate_images(self.svg_names, self.color_block_path)  # 显示生成的图案
-                
+            
+            duration_motif = time.time() - time1
+            print("motif duration is: ", duration_motif)
         else:
             stripe = Stripe()
             savenames_, color_block_path_ = stripe.generate_stripe_pattern(self.input_color_image, num=self.input_color_number)

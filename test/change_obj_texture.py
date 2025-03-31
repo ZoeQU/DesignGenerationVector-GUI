@@ -54,7 +54,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # 添加演员到渲染器
         self.renderer.AddActor(self.actor)
-        self.renderer.SetBackground(0.1, 0.1, 0.1)  # 背景颜色
+        self.renderer.SetBackground(1, 1, 1)  # 背景颜色
 
         # 初始化交互器
         self.iren.Initialize()

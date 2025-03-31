@@ -8,9 +8,17 @@ This study proposes an intelligent system for interactive vector pattern generat
 ![The method pipeline.](assets/framework.png)
 
 ## User Instructions & Application demo
-Moreover, we provide an interactive tool that allows users to efficiently generate vector graphic patterns with just a few clicks.
+Moreover, we provide an interactive tool that allows users to efficiently generate vector graphic patterns with just a few clicks. [Download demo video.](assets/demo_motif.mp4)
 
-Moreover, the proposed system incorporates additional algorithms for generating stripe and check patterns, which are fundamental and widely used in textile and fabric design. 
+<img src="assets/demo.png" alt="Demo Image" width="500">
+
+Moreover, the proposed system incorporates additional algorithms for generating [stripe](assets/demo_stripe.mp4) and [check](assets/demo_check.mp4) patterns, which are fundamental and widely used in textile and fabric design. 
+
+<p align="center">
+  <img src="assets/demo_check.png" alt="Demo: Set threshold to 0.55" style="height: 260px; margin-right: 10px;" />
+  <img src="assets/demo_stripe.png" alt="Demo: Set threshold to 0.85" style="height: 260px;" />
+</p>
+
 
 ## Installation
 - Install [Potrace](https://potrace.sourceforge.net/). Follow its official manual.

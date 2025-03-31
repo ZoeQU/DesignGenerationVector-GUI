@@ -7,16 +7,10 @@ This study proposes an intelligent system for interactive vector pattern generat
 
 ![The method pipeline.](assets/framework.png)
 
-## Application demo
-Moreover, we provide an interactive tool that allowsusers to efficiently extract and manipulate editable design elements with just a few clicks. The tool enables users to adjust the similarity threshold, which determines the number of extracted editable design elements.
+## User Instructions & Application demo
+Moreover, we provide an interactive tool that allows users to efficiently generate vector graphic patterns with just a few clicks.
 
-Below, we demonstrate the results generated with different threshold values:
-
-<p align="center">
-  <img src="assets/thhre_1.gif" alt="Demo: Set threshold to 0.55" style="height: 260px; margin-right: 10px;" />
-  <img src="assets/thhre_4.gif" alt="Demo: Set threshold to 0.85" style="height: 260px;" />
-</p>
-
+Moreover, the proposed system incorporates additional algorithms for generating stripe and check patterns, which are fundamental and widely used in textile and fabric design. 
 
 ## Installation
 - Install [Potrace](https://potrace.sourceforge.net/). Follow its official manual.

@@ -34,8 +34,8 @@ We provide an interactive tool that allows users to efficiently generate vector 
 In addition, the proposed system incorporates additional algorithms for generating [check](assets/demo_check.mp4) and [stripe](assets/demo_stripe.mp4) patterns, which are fundamental and widely used in textile and fabric design. 
 
 <p align="center">
-  <img src="assets/demo_check.png" alt="Demo: Check pattern generation" style="height: 260px; margin-right: 10px;" />
-  <img src="assets/demo_stripe.png" alt="Demo: Stripe pattern generation" style="height: 260px;" />
+  <img src="assets/demo_check.png" alt="Demo: Check pattern generation" style="height: 250px; margin-right: 10px;" />
+  <img src="assets/demo_stripe.png" alt="Demo: Stripe pattern generation" style="height: 250px;" />
 </p>
 
 
